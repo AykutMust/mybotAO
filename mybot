@@ -1,0 +1,46 @@
+-- Defining new strategies with additional functions
+function mustAttack(targetEnergy, playerEnergy, targetHealth, playerHealth)
+    -- Decides whether to attack based on energy and health comparisons.
+    -- Attacks if the player's health is greater than the target's health,
+    -- or if the player's energy is greater than the target's energy.
+    return (playerHealth >targetHealth) or (playerEnergy > targetEnergy)
+end
+
+findWeakestTarget() function
+    -- Finds the target with the lowest health among all players except the bot itself.
+    local minHealth = 99
+    local target id = zero
+    make state (LatestGameState.Players) in pairs for target
+        if target ~= ao.id and state.health < minHealth then
+            minHealth = status.health
+            targetId = target
+        end
+    end
+    return target id
+end
+
+-- Changing the DecisionNextAction function
+function decisionNextAction()
+    -- Determines the next action based on the current game state and the bot's strategies.
+    local player = LatestGameState.Players[ao.id]
+    local weakestTargetId = findWeakestTarget() -- Identifies the weakest target for potential attack.
+    local targetInRange = false
+    local target = zero
+
+    if weakTargetId then
+      target = LatestGameState.Players[weakestTargetId]
+      targetInRange = inRange(player.x, player.y, target.x, target.y, 1) -- Checks whether the target is in attack range.
+    end
+
+    if targetInRange and ShouldAttack(target.energy, player.energy, target.health, player.health) then
+      -- If a weak player is in range and the attack conditions are met, initiate the attack.
+      print(colors.red .. "Weak player in range. Attacking." .. colours.reset)
+      ao.send({Target = Game, Action = "PlayerAttack", Player = ao.id, AttackEnergy = tostring(player.energy)})
+    Another
+      -- If there is no suitable target or there is insufficient energy, act strategically.
+      -- Here you can define more complex movement strategies; for example, moving to a safe area to regenerate energy.
+      print(colors.blue .. "No suitable target or insufficient energy. We are acting strategically." .. colours.reset)
+      -- The existing code for random movement can be changed by a strategic movement decision.
+    end
+    InAction = false -- Resets the action flag to allow new actions.
+End
